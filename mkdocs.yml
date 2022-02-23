@@ -1,0 +1,12 @@
+site_name: In-Betweens
+repo_url: https://github.com/jamesvsnowden/bl_in-betweens
+edit_uri: edit/main/docs/
+site_description: In-Between shape keys for Blender
+site_author: James Snowden
+nav:
+  - About: 'index.md'
+  - Installation: 'installation.md'
+  - 'User Guide': 'user-guide.md'
+theme:
+  name: readthedocs
+  locale: en
