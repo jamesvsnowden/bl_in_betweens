@@ -1,3 +1,9 @@
+---
+hide:
+    - navigation
+    - toc
+---
+
 # In-Betweens
 
 In-between shape keys are intermediate shapes that modify other shape keys.

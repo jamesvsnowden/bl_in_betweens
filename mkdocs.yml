@@ -1,12 +1,47 @@
 site_name: In-Betweens
-repo_url: https://github.com/jamesvsnowden/bl_in-betweens
-edit_uri: edit/main/docs/
+repo_url: https://github.com/jamesvsnowden/bl_in_betweens
+repo_name: Github
 site_description: In-Between shape keys for Blender
 site_author: James Snowden
+copyright: Copyright &copy; 2022 James V Snowden
 nav:
-  - About: 'index.md'
-  - Installation: 'installation.md'
-  - 'User Guide': 'user-guide.md'
+  - Home: 'index.md'
+  - 'User Guide':
+    - Installation:  'user-guide/installation.md'
+    - 'Quick Start': 'user-guide/getting-started.md'
+    - 'Workflow': 'user-guide/workflow.md'
+    - 'Settings': 'user-guide/inbetween-settings.md'
+    - 'Updating': 'user-guide/updating.md'
+  - Support: 'support.md'
+  - Releases: 'releases.md'
 theme:
-  name: readthedocs
-  locale: en
+  name: material
+  icon:
+    repo: fontawesome/brands/github
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+  language: en
+plugins:
+  - search
+markdown_extensions:
+  - meta
+  - md_in_html
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - pymdownx.keys
+extra:
+  generator: false
+  social:
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/jamesvsnowden
+      name: James V Snowden on Twitter
+    - icon: fontawesome/brands/github
+      link: https://github.com/jamesvsnowden
+      name: James V Snowden on Github
