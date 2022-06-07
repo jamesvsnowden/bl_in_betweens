@@ -4,4 +4,4 @@ from bpy.props import BoolProperty
 from ..lib.update import AddonUpdatePreferences
 
 class InBetweenPreferences(AddonUpdatePreferences, AddonPreferences):
-    bl_idname = "rbf_drivers"
+    bl_idname = "in_betweens"

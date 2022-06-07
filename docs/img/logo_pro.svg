@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 600 600" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
+    <g id="Foreground" transform="matrix(1.2931,0,0,1.14224,-90.5172,-50.6681)">
+        <g transform="matrix(1.31047,0,0,1.31047,-91.6392,-74.3676)">
+            <path d="M300.38,107L300.38,259" style="fill:none;stroke:black;stroke-opacity:0.68;stroke-width:26.06px;"/>
+        </g>
+        <g transform="matrix(2.07928,0,0,2.3539,-541.163,-237.821)">
+            <circle cx="471" cy="288" r="29" style="stroke:black;stroke-width:7.75px;"/>
+        </g>
+        <g transform="matrix(-2.16758,-2.62778e-16,2.83342e-16,-2.33295,1020.93,1132.9)">
+            <path d="M331.672,309.415L362.964,372L300.38,372L331.672,309.415Z" style="stroke:black;stroke-width:7.62px;"/>
+        </g>
+        <g transform="matrix(0.755187,0,0,0.854928,-98.5815,-151.232)">
+            <path d="M637.432,349.609C713.709,388.609 765.977,467.981 765.977,559.463C765.977,689.46 660.436,795 530.44,795C400.444,795 294.904,689.46 294.904,559.463C294.904,467.981 347.172,388.609 423.448,349.609" style="fill:none;stroke:black;stroke-opacity:0.68;stroke-width:42.67px;"/>
+        </g>
+    </g>
+</svg>

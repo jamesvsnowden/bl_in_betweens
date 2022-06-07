@@ -6,16 +6,22 @@ site_author: James Snowden
 copyright: Copyright &copy; 2022 James V Snowden
 nav:
   - Home: 'index.md'
-  - 'User Guide':
+  - 'Docs':
     - Installation:  'user-guide/installation.md'
     - 'Quick Start': 'user-guide/getting-started.md'
     - 'Workflow': 'user-guide/workflow.md'
     - 'Settings': 'user-guide/inbetween-settings.md'
     - 'Updating': 'user-guide/updating.md'
   - Support: 'support.md'
-  - Releases: 'releases.md'
+  - Purchase: 'buy.md'
+  # - Releases: 'releases.md'
 theme:
   name: material
+  custom_dir: overrides
+  logo: /img/logo_pro.svg
+  palette:
+    primary: orange
+    accent: orange
   icon:
     repo: fontawesome/brands/github
   features:
@@ -37,6 +43,7 @@ markdown_extensions:
   - footnotes
   - pymdownx.keys
 extra:
+  homepage: "/"
   generator: false
   social:
     - icon: fontawesome/brands/twitter
@@ -45,3 +52,5 @@ extra:
     - icon: fontawesome/brands/github
       link: https://github.com/jamesvsnowden
       name: James V Snowden on Github
+extra_css:
+  - stylesheets/extra.css

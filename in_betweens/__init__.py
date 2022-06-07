@@ -49,7 +49,9 @@ from .ops.new import INBETWEEN_OT_new
 from .ops.select import INBETWEEN_OT_select
 from .ops.add import INBETWEEN_OT_add
 from .ops.remove import INBETWEEN_OT_remove
-from .ops.activate import INBETWEEN_OT_activate
+from .ops.activation_value import (INBETWEEN_OT_activate,
+                                   INBETWEEN_OT_activation_value_update,
+                                   INBETWEEN_OT_activation_value_actions)
 from .gui.hero import INBETWEENS_PT_hero
 from .gui.inbetween import INBETWEENS_PT_inbetween
 from .gui.inbetweens import INBETWEENS_UL_inbetweens
@@ -81,6 +83,8 @@ def classes():
         INBETWEEN_OT_add,
         INBETWEEN_OT_remove,
         INBETWEEN_OT_activate,
+        INBETWEEN_OT_activation_value_update,
+        INBETWEEN_OT_activation_value_actions,
         # gui
         INBETWEENS_PT_inbetween,
         INBETWEENS_UL_inbetweens,

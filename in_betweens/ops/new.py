@@ -10,8 +10,6 @@ if TYPE_CHECKING:
     from ..api.in_between import InBetween
 
 
-
-
 class INBETWEEN_OT_new(Base, Operator):
     
     bl_idname = 'in_between.new'
@@ -78,5 +76,17 @@ class INBETWEEN_OT_new(Base, Operator):
 
         inbtwn.update()
         inbetweens.active_index = len(inbetweens)-1
+
+        shapes = object.data.shape_keys.key_blocks
+        i_item = shapes.find(target.name)
+        i_hero = shapes.find(hero.name)
+        offset = i_item - i_hero - 1
+
+        import bpy
+        object.active_shape_key_index = i_item
+        while offset:
+            bpy.ops.object.shape_key_move(type='UP')
+            offset -= 1
+        object.active_shape_key_index = i_hero
 
         return {'FINISHED'}

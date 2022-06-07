@@ -1,7 +1,7 @@
 
 from typing import Optional, Tuple, Union, TYPE_CHECKING
 from ..lib.curve_mapping import draw_curve_manager_ui
-from ..ops.activate import INBETWEEN_OT_activate
+from ..ops.activation_value import INBETWEEN_OT_activation_value_actions
 if TYPE_CHECKING:
     from bpy.types import UILayout
     from ..api.in_between import InBetween
@@ -35,9 +35,9 @@ def draw_inbetween_settings(layout: 'UILayout', settings: 'InBetween') -> None:
     labels, values, decorations = layout_split(layout, decorate_fill=False)
     labels.label(text="Activation  Value")
     values.prop(settings, "activation_value", text="")
-    decorations.operator(INBETWEEN_OT_activate.bl_idname,
+    decorations.operator(INBETWEEN_OT_activation_value_actions.bl_idname,
                          text="",
-                         icon='ZOOM_SELECTED').identifier = settings.identifier
+                         icon='DOWNARROW_HLT').identifier = settings.identifier
 
     labels, values = layout_split(layout, align=True)
     labels.label(text="Activation Range Min")

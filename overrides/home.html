@@ -1,0 +1,120 @@
+{% extends "main.html" %}
+{% block tabs %}
+  {{ super() }}
+  <style>
+    .md-header{
+      position:initial
+    }
+    .md-main__inner{
+      margin:0
+    }
+    .md-content{
+      display:none
+    }
+    .jvs-hero__features {
+      padding: 0rem 2rem;
+    }
+    .jvs-hero__panel img {
+      box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.6);
+    }
+    @media screen and (min-width:60em){
+      .md-sidebar--secondary{
+        display:none
+      }
+    }
+    @media screen and (min-width:76.25em){
+      .md-sidebar--primary{
+        display:none
+      }
+      .jvs-hero__content {
+        display: flex;
+        justify-content: center;
+        margin: 0 8em;
+      }
+      .jvs-hero__features {
+        flex-grow: 1;
+        width: 50%;
+      }
+      .jvs-hero__panel {
+        flex-grow: 1;
+        width: 50%;
+      }
+      .inbtw-home__cards {
+        display: flex;
+        justify-content: center;
+        margin-top:4em;
+      }
+      .inbtw-home__card {
+        flex-basis: 30%;
+        text-align: center;
+        margin: 1em;
+        padding: 1em;
+        border-radius: 0.2em;
+        box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.6);
+        background-color: rgb(255, 255, 255);
+      }
+      .inbtw-home__card .twemoji {
+        height: 3em;
+      }
+    }
+  </style>
+  <section class="mdx-container" style="background:url('img/home_hero_bg.svg#svgView(preserveAspectRatio(none))') center center no-repeat;background-size:100% 100%;">
+    <div class="md-grid md-typeset">
+      <div class="mdx-hero">
+        <div class="mdx-hero__image" style="padding: 4em 8em;">
+          <img src="img/logo_asks.svg">
+        </div>
+        <div class="mdx-hero__content jvs-hero__content">
+          <div class="jvs-hero__features">
+            <h1>What are In-Betweens?</h1>
+            <p>
+              In-Between shape keys are intermediate shapes that modify other shape keys. 
+              They allow more precise control over deformation and are particularly useful for facial animation.
+            </p>
+            <p>
+              In-betweens are offered natively in many 3D software packages and are considered indispensible
+              by professional riggers and animators. <b>In-Betweens</b> brings a flexible implementation to
+              Blender that is easy-to-use while offering advanced features that not only match but exceed the
+              capabilities of other software packages.
+            </p>
+          </div>
+          <div class="jvs-hero__panel">
+            <img alt="in-betweens panel" src="img/home_panel.png">
+          </div>
+        </div>
+      </div>
+      <div class="inbtw-home__cards">
+        <div class="inbtw-home__card">
+          <span class="twemoji">
+            {% include ".icons/fontawesome/solid/book-open-reader.svg" %} 
+          </span>
+          <h1>Docs</h1>
+          <p>
+            Get up and running fast or dig into the details with the online documentation.
+          </p>
+        </div>
+        <div class="inbtw-home__card">
+          <span class="twemoji">
+            {% include ".icons/fontawesome/solid/life-ring.svg" %} 
+          </span>
+          <h1>Support</h1>
+          <p>
+            Prompt support available to all license holders.
+          </p>
+        </div>
+        <div class="inbtw-home__card">
+          <span class="twemoji">
+            {% include ".icons/fontawesome/solid/hand-holding-dollar.svg" %} 
+          </span>
+          <h1>Purchase</h1>
+          <p>
+            Purchase the addon to get access to auto-update features or get a subscription for access
+            to all available addons.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}
+{% block content %}{% endblock %}
+{% block footer %}{% endblock %}

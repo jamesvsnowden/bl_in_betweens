@@ -9,6 +9,7 @@ if TYPE_CHECKING:
 
 
 class INBETWEEN_OT_remove(Operator):
+
     bl_idname = 'in_between.remove'
     bl_label = "Remove In-Between"
     bl_description = "Remove the selected in-between"
@@ -39,8 +40,14 @@ class INBETWEEN_OT_remove(Operator):
 
     def draw(self, _: 'Context') -> None:
         layout = self.layout
-        layout.operator("INBETWEEN_OT_remove", text="Remove In-Between", icon='REMOVE').action='REMOVE'
-        layout.operator("INBETWEEN_OT_remove", text="Delete In-Between Shape Key", icon='X').action='DELETE'
+
+        layout.operator(INBETWEEN_OT_remove.bl_idname,
+                        text="Remove In-Between",
+                        icon='REMOVE').action='REMOVE'
+
+        layout.operator(INBETWEEN_OT_remove.bl_idname,
+                        text="Delete In-Between Shape Key",
+                        icon='X').action='DELETE'
 
     def invoke(self, context: 'Context', _: 'Event') -> Set[str]:
         context.window_manager.popup_menu(INBETWEEN_OT_remove.draw)
@@ -55,6 +62,11 @@ class INBETWEEN_OT_remove(Operator):
         name = inbetweens.active.name
         driver_remove(key, f'key_blocks["{name}"].value')
         data.remove(data.find(name))
+
         if self.action == 'DELETE':
-            object.shape_key_remove(hero)
+            kbs = object.data.shape_keys.key_blocks
+            idx = kbs.find(name)
+            if idx >= 0:
+                object.shape_key_remove(kbs[idx])
+
         return {'FINISHED'}

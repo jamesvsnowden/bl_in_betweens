@@ -1,9 +1,10 @@
 
 from typing import TYPE_CHECKING
+from bpy.types import Menu
 from ..ops.new import INBETWEEN_OT_new
 from ..ops.select import INBETWEEN_OT_select
 if TYPE_CHECKING:
-    from bpy.types import Context, Menu
+    from bpy.types import Context
 
 
 def draw_menu_items(menu: 'Menu', context: 'Context') -> None:
