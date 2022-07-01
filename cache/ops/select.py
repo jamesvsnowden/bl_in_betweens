@@ -66,7 +66,6 @@ class INBETWEEN_OT_select(Base, Operator):
 
             inbtwn: InBetween = inbetweens.data.add()
             inbtwn["name"] = target.name
-            inbtwn["identifier"] = f'inbetween_{uuid4().hex}'
             inbtwn["activation_value"] = hero.value
             inbtwn["activation_radius"] = 1.0-hero.value
             inbtwn.activation_curve.__init__(type='BELL',

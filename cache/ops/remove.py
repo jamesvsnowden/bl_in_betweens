@@ -1,7 +1,7 @@
 
 from typing import Set, TYPE_CHECKING
 from bpy.types import Operator
-from bpy.props import EnumProperty
+from bpy.props import EnumProperty, StringProperty
 from .base import COMPAT_ENGINES, COMPAT_OBJECTS
 from ..lib.driver_utils import driver_remove
 if TYPE_CHECKING:
@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 class INBETWEEN_OT_remove(Operator):
 
-    bl_idname = 'in_between.remove'
+    bl_idname = 'in_betweens.inbetween_remove'
     bl_label = "Remove In-Between"
     bl_description = "Remove the selected in-between"
     bl_options = {'INTERNAL', 'UNDO'}
@@ -25,6 +25,13 @@ class INBETWEEN_OT_remove(Operator):
         options=set()
         )
 
+    identifier: StringProperty(
+        name="Identifier",
+        description="Identifier of the in-between to remove (optional)",
+        default="",
+        options=set()
+        )
+
     @classmethod
     def poll(cls, context: 'Context') -> bool:
         if context.engine in COMPAT_ENGINES:
@@ -33,9 +40,8 @@ class INBETWEEN_OT_remove(Operator):
                 shape = object.active_shape_key
                 if shape is not None:
                     key = shape.id_data
-                    if key.use_relative and key.is_property_set("in_betweens"):
-                        data = key.in_betweens.get(shape.name)
-                        return data is not None and data.active is not None
+                    return key.is_property_set("in_betweens") and (shape in key.in_betweens or
+                                                                   shape in key.in_betweens.heros)
         return False
 
     def draw(self, _: 'Context') -> None:
@@ -55,18 +61,18 @@ class INBETWEEN_OT_remove(Operator):
 
     def execute(self, context: 'Context') -> Set[str]:
         object = context.object
-        hero = object.active_shape_key
-        key = hero.id_data
-        inbetweens = key.in_betweens[hero.name]
-        data = inbetweens.data
-        name = inbetweens.active.name
-        driver_remove(key, f'key_blocks["{name}"].value')
-        data.remove(data.find(name))
+        shape = object.active_shape_key
+        key = shape.id_data
+        inbetweens = key.in_betweens
 
-        if self.action == 'DELETE':
-            kbs = object.data.shape_keys.key_blocks
-            idx = kbs.find(name)
-            if idx >= 0:
-                object.shape_key_remove(kbs[idx])
+        if shape in inbetweens:
+            inbetween = inbetweens[shape]
+        else:
+            inbetween = inbetweens.search(self.identifier)
+            if inbetween is None:
+                self.report({'ERROR'}, (f'Search for in-between with '
+                                        f'identifier {self.identifier} failed.'))
+                return {'CANCELLED'}
 
+        inbetweens.remove(inbetween, self.action == 'DELETE')
         return {'FINISHED'}

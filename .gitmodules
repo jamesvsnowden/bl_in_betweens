@@ -1,12 +1,6 @@
-[submodule "in_betweens/lib/curve_mapping"]
-	path = in_betweens/lib/curve_mapping
-	url = https://github.com/jamesvsnowden/bl_curve_mapping.git
-[submodule "in_betweens/lib/driver_utils"]
-	path = in_betweens/lib/driver_utils
-	url = https://github.com/jamesvsnowden/bl_driver_utils.git
-[submodule "in_betweens/lib/symmetry"]
-	path = in_betweens/lib/symmetry
-	url = https://github.com/jamesvsnowden/bl_symmetry.git
 [submodule "in_betweens/lib/update"]
 	path = in_betweens/lib/update
 	url = https://github.com/jamesvsnowden/bl_addon_update_strategy.git
+[submodule "in_betweens/lib/asks"]
+	path = in_betweens/lib/asks
+	url = https://github.com/jamesvsnowden/bl_asks.git

@@ -30,114 +30,160 @@ bl_info = {
 
 UPDATE_URL = ""
 
-from .lib.curve_mapping import (BLCMAP_CurvePointProperties,
-                                BLCMAP_CurveProperties,
-                                BLCMAP_CurvePoint,
-                                BLCMAP_CurvePoints,
-                                BLCMAP_Curve,
-                                BLCMAP_OT_curve_copy,
-                                BLCMAP_OT_curve_paste,
-                                BLCMAP_OT_node_ensure,
-                                BCLMAP_OT_curve_point_remove,
-                                BLCMAP_OT_handle_type_set)
-from .api.activation_curve import ActivationCurve
-from .api.in_between import InBetween
-from .api.in_betweens import InBetweens
-from .api.target import Target
-from .api.preferences import InBetweenPreferences
-from .ops.new import INBETWEEN_OT_new
-from .ops.select import INBETWEEN_OT_select
-from .ops.add import INBETWEEN_OT_add
-from .ops.remove import INBETWEEN_OT_remove
-from .ops.activation_value import (INBETWEEN_OT_activate,
-                                   INBETWEEN_OT_activation_value_update,
-                                   INBETWEEN_OT_activation_value_actions)
-from .gui.hero import INBETWEENS_PT_hero
-from .gui.inbetween import INBETWEENS_PT_inbetween
-from .gui.inbetweens import INBETWEENS_UL_inbetweens
-from .gui.menu import draw_menu_items
-from .app.bus import enable_message_broker, MESSAGE_BROKER
+from typing import Set
+import bpy
+from .lib import asks
 
-def classes():
-    return [
-        # lib
-        BLCMAP_CurvePointProperties,
-        BLCMAP_CurveProperties,
-        BLCMAP_CurvePoint,
-        BLCMAP_CurvePoints,
-        BLCMAP_Curve,
-        BLCMAP_OT_curve_copy,
-        BLCMAP_OT_curve_paste,
-        BLCMAP_OT_node_ensure,
-        BCLMAP_OT_curve_point_remove,
-        BLCMAP_OT_handle_type_set,
-        # api
-        ActivationCurve,
-        InBetween,
-        InBetweens,
-        InBetweenPreferences,
-        Target,
-        # ops
-        INBETWEEN_OT_new,
-        INBETWEEN_OT_select,
-        INBETWEEN_OT_add,
-        INBETWEEN_OT_remove,
-        INBETWEEN_OT_activate,
-        INBETWEEN_OT_activation_value_update,
-        INBETWEEN_OT_activation_value_actions,
-        # gui
-        INBETWEENS_PT_inbetween,
-        INBETWEENS_UL_inbetweens,
-        INBETWEENS_PT_hero,
-        ]
+
+def draw_inbetween(layout: bpy.types.UILayout, entity: asks.types.Entity) -> None:
+    components = entity.components
+    components["owner"].draw(layout, label="Hero")
+    components["range"].draw(layout)   
+    components["curve"].draw(layout)
+    components["value"].draw(layout)
+
+
+class AddInBetween(bpy.types.Operator):
+
+    bl_idname = "inbetweens.add"
+    bl_label = "Add In-Between"
+    bl_description = ""
+    bl_options = {'INTERNAL', 'UNDO'}
+
+    @classmethod
+    def poll(cls, context: bpy.types.Context) -> bool:
+        if asks.utils.validate_context(context):
+            object = context.object
+            if object is not None and asks.utils.supports_shape_keys(object):
+                shapekey = object.active_shape_key
+                if shapekey is not None:
+                    key = shapekey.id_data
+                    if not key.use_relative or object.active_shape_key_index > 0:
+                        entity = key.asks.entities.get(shapekey)
+                        return entity is None or not entity.tag
+
+
+class NewInBetween(bpy.types.Operator):
+
+    bl_idname = "inbetweens.new"
+    bl_label = "New In-Between"
+    bl_description = ""
+    bl_options = {'INTERNAL', 'UNDO'}
+
+    @classmethod
+    def poll(cls, context: bpy.types.Context) -> bool:
+        if asks.utils.validate_context(context):
+            object = context.object
+            if object is not None and asks.utils.supports_shape_keys(object):
+                shapekey = object.active_shape_key
+                if shapekey is not None:
+                    key = shapekey.id_data
+                    return not key.use_relative or object.active_shape_key_index > 0
+
+    def execute(self, context: bpy.types.Context) -> Set[str]:
+        object = context.object
+        k_hero = object.active_shape_key
+        system = k_hero.id_data.asks
+
+        e_owner = system.entities.ensure(k_hero)
+        c_owner = e_owner.shape()
+
+        c_curve = system.components.create("inbetweens.curve",
+                                           label="Curve")
+
+        c_value = system.components.create("inbetweens.value",
+                                           label="Target Value",
+                                           value=1.0)
+
+        c_range = system.components.create("inbetweens.range",
+                                           min=k_hero.slider_min,
+                                           max=k_hero.value,
+                                           label="Range",
+                                           label_min="Start",
+                                           label_max="Finish")
+
+        k_inbtw = object.shape_key_add(name=self.name, from_mix=False)
+        e_inbtw = system.entities.create(k_inbtw, type="INBETWEEN", draw=draw_inbetween)
+        e_inbtw.tags.add('INBETWEEN')
+
+        e_inbtw.components.attach(c_owner, name="owner")
+        e_inbtw.components.attach(c_curve, name="curve")
+        e_inbtw.components.attach(c_range, name="range")
+        e_inbtw.components.attach(c_value, name="value")
+
+        e_inbtw.processors.assign(inbetween_rename, c_owner)
+        e_inbtw.processors.assign(inbetween_driver_update, c_owner)
+        e_inbtw.processors.assign(inbetween_fcurve_update, c_range, c_value, c_curve)
+
+        e_owner.children.append(e_inbtw)
+
+        inbetween_driver_update(e_inbtw, c_owner)
+        inbetween_fcurve_update(e_inbtw, c_range, c_value, c_curve)
+
+        return {'FINISHED'}
+
+
+def inbetween_rename(e_inbetween: asks.types.Entity,
+                     c_owner: asks.types.ShapeComponent,
+                     c_range: asks.types.RangeComponent) -> None:
+    k_inbetween = e_inbetween.shape().resolve()
+    if k_inbetween:
+        k_inbetween.name = f'{c_owner.value}_{c_range.max:.2f}'
+
+
+def inbetween_fcurve_update(e_inbtw: asks.types.Entity,
+                            c_range: asks.types.RangeComponent,
+                            c_value: asks.types.ValueComponent,
+                            c_curve: asks.types.CurveComponent) -> None:
+    fcurve = e_inbtw.fcurve(True)
+    points = c_curve.points.to_bezier(range_x=(c_range.min, c_range.max),
+                                      range_y=(0.0, c_value.value),
+                                      extrapolate=False)
+    asks.utils.set_keyframe_points(fcurve, points)
+
+
+def inbetween_driver_update(e_inbtw: asks.types.Entity,
+                            c_owner: asks.types.ShapeComponent) -> None:
+    driver = e_inbtw.driver(True)
+
+    variables = driver.variables
+    while len(variables):
+        variables.remove(variables[-1])
+
+    for param in e_inbtw.parameters:
+        variable = variables.new()
+        variable.type = 'SINGLE_PROP'
+        variable.name = f'var_{str(len(variables)).zfill(3)}'
+
+        target = variable.targets[0]
+        target.id_type = 'KEY'
+        target.id = e_inbtw.id_data
+        target.data_path = param.data_path
+
+    variable = variables.new()
+    variable.type = 'SINGLE_PROP'
+    variable.name = f'var_{str(len(variables)).zfill(3)}'
+
+    target = variable.targets[0]
+    target.id_type = 'KEY'
+    target.id = e_inbtw.id_data
+    target.data_path = f'key_blocks["{c_owner.value}"].value'
+
+    driver.type = 'SCRIPTED'
+    driver.expression = "*".join(variables.keys())
+
 
 def register():
-    import bpy
+    ns = asks.utils.namespace("inbetweens")
+    ns.add_component("value", asks.types.ValueComponent)
+    ns.add_component("range", asks.types.RangeComponent)
+    ns.add_component("curve", asks.types.CurveComponent)
+    ns.add_draw_handler(draw_inbetween)
+    ns.add_processor(inbetween_driver_update)
+    ns.add_processor(inbetween_fcurve_update)
+    ns.add_context_menu_item(NewInBetween)
+    ns.register()
 
-    BLCMAP_OT_curve_copy.bl_idname = "in_betweens.curve_copy"
-    BLCMAP_OT_curve_paste.bl_idname = "in_betweens.curve_paste"
-    BLCMAP_OT_node_ensure.bl_idname = "in_betweens.node_ensure"
-    BCLMAP_OT_curve_point_remove.bl_idname = "in_betweens.curve_point_remove"
-    BLCMAP_OT_handle_type_set.bl_idname = "in_betweens.handle_type_set"
-
-    from .lib import update
-    update.register("in_betweens", UPDATE_URL)
-
-    for cls in classes():
-        bpy.utils.register_class(cls)
-
-    bpy.types.Key.in_betweens = bpy.props.CollectionProperty(
-        name="In-Betweens",
-        type=InBetweens,
-        options=set()
-        )
-
-    bpy.types.MESH_MT_shape_key_context_menu.append(draw_menu_items)
-    bpy.app.handlers.load_post.append(enable_message_broker)
-    enable_message_broker()
 
 def unregister():
-    import bpy
-    import sys
-    import operator
-
-    bpy.msgbus.clear_by_owner(MESSAGE_BROKER)
-    bpy.app.handlers.load_post.remove(enable_message_broker)
-    bpy.types.MESH_MT_shape_key_context_menu.remove(draw_menu_items)
-
-    from .lib import update
-    update.unregister()
-
-    try:
-        del bpy.types.Key.in_betweens
-    except: pass
-
-    for cls in reversed(classes()):
-        bpy.utils.unregister_class(cls)
-
-    modules_ = sys.modules 
-    modules_ = dict(sorted(modules_.items(), key=operator.itemgetter(0)))
-   
-    for name in modules_.keys():
-        if name.startswith(__name__):
-            del sys.modules[name]
+    asks.utils.namespace("inbetweens").unregister()
